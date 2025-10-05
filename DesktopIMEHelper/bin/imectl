@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")"/.. && pwd)"
+CMDS="$DIR/cmds"
+
+usage() {
+  cat <<EOF
+imectl <command> [args]
+
+Commands:
+  add-fcitx5 [app.desktop|APPID]        # Add fcitx5 IME environment variables to Exec
+  remove-fcitx5 [app.desktop|APPID]     # Remove fcitx5 IME variables from Exec
+  batch-fcitx5                          # Apply IME variables to multiple Electron/Qt apps
+  add-wayland [app.desktop|APPID]       # Add Wayland/Ozone flags
+  remove-wayland [app.desktop|APPID]    # Remove Wayland/Ozone flags
+  backup [app.desktop|APPID]            # Backup .desktop to .bak
+  restore [app.desktop|APPID]           # Restore .desktop from .bak
+  diagnose                              # Show IME/Wayland/broken desktop file status
+  clean-broken                          # Remove .desktop entries pointing to missing binaries
+EOF
+  exit 1
+}
+
+cmd="${1:-}"; shift || true
+[[ -z "${cmd}" ]] && usage
+[[ -x "$CMDS/${cmd}.sh" ]] || { echo "Unknown command: $cmd"; usage; }
+exec "$CMDS/${cmd}.sh" "$@"
+
+if [[ -z "${cmd}" ]]; then
+  echo "Available .desktop entries:"
+  find ~/.local/share/applications /usr/share/applications -maxdepth 1 -type f -name "*.desktop" \
+    -printf "%-40f %p\n" 2>/dev/null | sort -f
+  echo
+  usage
+  exit 0
+fi
