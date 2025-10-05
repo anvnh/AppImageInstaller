@@ -1,4 +1,4 @@
-AppImage Installer and Uninstaller
+# AppImage Installer and Uninstaller
 
 A lightweight, distribution-agnostic utility for integrating .AppImage applications into a user’s desktop environment.
 It installs or removes applications cleanly without requiring root access.
