@@ -38,5 +38,5 @@
     devShells = forAll (pkgs: {
       default = pkgs.mkShell { buildInputs = deps pkgs; };
     });
-  }
-}
+  };
+};
